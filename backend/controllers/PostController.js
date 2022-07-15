@@ -112,7 +112,8 @@ export const remove = async (req, res) => {
         })
 
         return res.status(200).json({
-            message: 'Deleted post: ' + postId
+            id: postId,
+            message: 'deleted post:  ' + postId
         })
     } catch (error) {
         return res.status(500).json({
@@ -132,11 +133,13 @@ export const update = async (req, res) => {
             title: req.body.title,
             text: req.body.text,
             user: req.body.userId,
-            tags: req.body.tags
+            tags: req.body.tags,
+            imageUrl: req.body.imageUrl
         }
         )
 
         return res.status(200).json({
+            _id: postId,
             message: "Post was updated"
         })
     } catch (error) {

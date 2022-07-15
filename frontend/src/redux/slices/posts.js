@@ -5,8 +5,17 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
     const { data } = await instanceAPI.get('/posts').then(res => res);
     return data;
 });
+
 export const fetchTags = createAsyncThunk('posts/fetchTags', async () => {
     const { data } = await instanceAPI.get('/tags').then(res => res);
+
+    return data;
+});
+
+export const fetchRemovePost = createAsyncThunk("posts/fetchRemovePost", async (id) => {
+
+    const { data } = await instanceAPI.delete(`/posts/${id}`)
+
     return data;
 });
 
@@ -38,8 +47,8 @@ const postsSlice = createSlice({
         [fetchPosts.rejected]: (state) => {
             state.posts.items = []
             state.posts.status = 'Error'
-
         },
+        // fetch tags
         [fetchTags.pending]: (state) => {
             state.tags.items = []
             state.tags.status = 'loading'
@@ -51,6 +60,21 @@ const postsSlice = createSlice({
         [fetchTags.rejected]: (state) => {
             state.tags.items = []
             state.tags.status = 'Error'
+        },
+
+        // remove post
+        [fetchRemovePost.pending]: (state, action) => {
+            state.posts.items = state.posts.items.filter(post => post._id !== action.meta.arg)
+        },
+        [fetchRemovePost.fulfilled]: (state, action) => {
+            state.posts.items = state.posts.items.filter(post => post._id !== action.payload.id)
+        },
+        [fetchRemovePost.rejected]: (state, error) => {
+            if (error) {
+                console.error(error)
+            }
+            state.posts.items = []
+            state.posts.status = 'Error'
         },
     }
 });

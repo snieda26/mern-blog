@@ -5,7 +5,9 @@ import DeleteIcon from "@mui/icons-material/Clear";
 import EditIcon from "@mui/icons-material/Edit";
 import EyeIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import CommentIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { fetchRemovePost } from "../../redux/slices/posts";
 
 import styles from "./Post.module.scss";
 import { UserInfo } from "../UserInfo";
@@ -25,28 +27,42 @@ export const Post = ({
   isLoading,
   isEditable,
 }) => {
+
+  const dispatch = useDispatch();
+
+  const onRemovePost = (id) => {
+    alert(id)
+    dispatch(fetchRemovePost(id))
+  }
+
   if (isLoading) {
     return <PostSkeleton />;
   }
-
 
   return (
     <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>
       {isEditable && (
         <div className={styles.editButtons}>
           <IconButton color="primary">
-            <EditIcon />
+            <Link to={`/posts/${id}/edit`}>
+              <EditIcon />
+            </Link>
           </IconButton>
           <IconButton color="secondary">
-            <DeleteIcon />
+            <DeleteIcon onClick={() => onRemovePost(id)} />
           </IconButton>
         </div>
       )}
-      <img
-        className={clsx(styles.image, { [styles.imageFull]: isFullPost })}
-        src={imageUrl}
-        alt={title}
-      />
+
+      {
+        imageUrl && (
+          <img
+            className={clsx(styles.image, { [styles.imageFull]: isFullPost })}
+            src={imageUrl}
+          />
+        )
+      }
+
       <div className={styles.wrapper}>
         <UserInfo {...user} additionalText={createdAt} />
         <div className={styles.indention}>

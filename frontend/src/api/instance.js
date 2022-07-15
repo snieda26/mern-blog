@@ -6,4 +6,11 @@ const instanceAPI = axios.create({
 })
 
 
+instanceAPI.interceptors.request.use((config) => {
+    config.headers.Authorization = localStorage.getItem('token')
+    console.log({ 'tokenAuth': localStorage.getItem('token') })
+
+    return config;
+})
+
 export default instanceAPI;
